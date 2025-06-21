@@ -4,7 +4,7 @@
   "short_name": "Quesada",
   "start_url": "./index.html",
   "display": "standalone",
-  "background_color": "#c8102e",
+  "background_color": "#ffffff",
   "theme_color": "#c8102e",
   "icons": [
     {

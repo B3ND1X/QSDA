@@ -5,7 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="mobile-web-app-capable" content="yes">
-    <meta name="theme-color" content="#c8102e"> <!-- Added this -->
     <link rel="manifest" href="manifest.json">
     <link rel="icon" href="assets/icon.png">
     <title>Quesada Recipes</title>
@@ -13,27 +12,21 @@
         :root {
             color-scheme: light dark;
         }
-
-        html, body {
-            background-color: #c8102e; /* Changed from white */
-            max-width: 100%;
-            overflow-x: hidden;
+        
+        * {
+            box-sizing: border-box;
         }
-
+        
         body {
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
             margin: 0;
             padding: 0;
+            background: #fff;
             color: #000;
             line-height: 1.6;
+            overflow-x: hidden;
             width: 100%;
         }
-
-        * {
-            box-sizing: border-box;
-            max-width: 100%;
-        }
-
         
         header {
             background: #c8102e;
