@@ -1,0 +1,7 @@
+Copyright Liam Bendix 2025
+
+This code is provided for transparency and educational purposes only.
+You may not use, copy, modify, distribute, sublicense, or profit from this code in any way,
+commercial or non-commercial, without explicit written permission from the author.
+
+All rights reserved.
