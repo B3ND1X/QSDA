@@ -1,0 +1,145 @@
+
+:root {
+  color-scheme: light dark;
+}
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+  background: #fff;
+  color: #000;
+  line-height: 1.6;
+}
+
+header {
+  background: #c8102e;
+  color: #fff;
+  padding: 1rem;
+  text-align: center;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+header h1 {
+  margin: 0;
+  font-size: 1.8rem;
+}
+
+nav {
+  margin-top: 0.5rem;
+}
+
+nav a {
+  color: yellow;
+  margin: 0 10px;
+  text-decoration: none;
+  font-weight: bold;
+}
+
+#search {
+  margin-top: 1rem;
+  padding: 0.5rem;
+  width: 90%;
+  max-width: 400px;
+  font-size: 1rem;
+}
+
+main {
+  padding: 1rem;
+}
+
+#recipe-container {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 1rem;
+}
+
+@media (min-width: 768px) {
+  #recipe-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  }
+}
+
+.recipe-box {
+  background: #f8f8f8;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 0;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.1);
+  overflow-x: auto;
+}
+
+.recipe-toggle {
+  background-color: #c8102e;
+  color: #fff;
+  padding: 0.75rem;
+  width: 100%;
+  text-align: left;
+  border: none;
+  font-weight: bold;
+  font-size: 1rem;
+  cursor: pointer;
+  border-radius: 5px 5px 0 0;
+}
+
+.recipe-toggle.active {
+  background-color: #a00d24;
+}
+
+.recipe-content {
+  display: none;
+  padding: 1rem;
+  border-top: 1px solid #ccc;
+  background: #f8f8f8;
+  border-radius: 0 0 5px 5px;
+  overflow-x: auto;
+}
+
+.recipe-content.open {
+  display: block;
+}
+
+.recipe-content pre {
+  white-space: pre-wrap;
+  word-break: break-word;
+  font-size: 0.95rem;
+  line-height: 1.4;
+}
+
+.theme-toggle {
+  margin-top: 1rem;
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  cursor: pointer;
+  border: none;
+  border-radius: 4px;
+  background-color: #f0f0f0;
+}
+
+.dark-mode {
+  background: #121212;
+  color: #e0e0e0;
+}
+
+.dark-mode header {
+  background: #333;
+  color: #fff;
+}
+
+.dark-mode nav a {
+  color: #ffeb3b;
+}
+
+.dark-mode .recipe-box,
+.dark-mode .recipe-content {
+  background: #1e1e1e;
+  border-color: #444;
+  color: #fff;
+}
+
+.dark-mode .theme-toggle {
+  background-color: #333;
+  color: #fff;
+}

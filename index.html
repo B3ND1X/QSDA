@@ -1,0 +1,1100 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <link rel="manifest" href="manifest.json">
+    <link rel="icon" href="assets/icon.png">
+    <title>Quesada Recipes</title>
+    <style>
+        :root {
+            color-scheme: light dark;
+        }
+        
+        * {
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: #fff;
+            color: #000;
+            line-height: 1.6;
+            overflow-x: hidden;
+            width: 100%;
+        }
+        
+        header {
+            background: #c8102e;
+            color: #fff;
+            padding: 1rem;
+            text-align: center;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            width: 100%;
+        }
+        
+        header h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+        
+        /* Hamburger Menu */
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            cursor: pointer;
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            z-index: 1001;
+            padding: 0.5rem;
+        }
+        
+        .hamburger span {
+            width: 25px;
+            height: 3px;
+            background: white;
+            margin: 2px 0;
+            transition: 0.3s;
+            border-radius: 1px;
+        }
+        
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(-45deg) translate(-5px, 6px);
+        }
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(45deg) translate(-5px, -6px);
+        }
+        
+        /* Navigation */
+        nav {
+            margin-top: 0.5rem;
+            display: flex;
+            justify-content: center;
+            gap: 15px;
+            flex-wrap: wrap;
+            width: 100%;
+        }
+        
+        nav.mobile-hidden {
+            display: none;
+        }
+        
+        .nav-tab {
+            color: yellow;
+            text-decoration: none;
+            font-weight: bold;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            transition: background-color 0.3s;
+            cursor: pointer;
+            font-size: 0.9rem;
+            white-space: nowrap;
+        }
+        
+        .nav-tab:hover {
+            background-color: rgba(255, 255, 255, 0.1);
+        }
+        
+        .nav-tab.active {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        /* Search and Theme Toggle */
+        .header-controls {
+            margin-top: 1rem;
+            display: flex;
+            justify-content: center;
+            gap: 0.75rem;
+            align-items: center;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        #search {
+            padding: 0.75rem;
+            font-size: 1rem;
+            border: none;
+            border-radius: 8px;
+            flex: 1;
+            min-width: 0;
+            max-width: 280px;
+        }
+        
+        .theme-toggle {
+            padding: 0.75rem 1rem;
+            font-size: 0.9rem;
+            cursor: pointer;
+            border: none;
+            border-radius: 8px;
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+        
+        .theme-toggle:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        /* Main Content */
+        main {
+            padding: 1rem;
+            width: 100%;
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        .section {
+            display: none;
+            width: 100%;
+            max-width: 100%;
+        }
+        
+        .section.active {
+            display: block;
+        }
+        
+        /* Checklist Styles */
+        #checklist ul {
+            list-style-type: none;
+            padding: 0;
+            margin: 0;
+        }
+        
+        #checklist li {
+            background: #f8f8f8;
+            margin: 0.75rem 0;
+            padding: 1rem;
+            border-left: 4px solid #c8102e;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        #checklist li:hover {
+            background: #f0f0f0;
+            transform: translateY(-1px);
+        }
+        
+        #checklist li.completed {
+            background: #e8f5e8;
+            border-left-color: #28a745;
+            text-decoration: line-through;
+            opacity: 0.7;
+        }
+        
+        #checklist li ul {
+            margin-top: 0.5rem;
+            padding-left: 1rem;
+        }
+        
+        #checklist li ul li {
+            background: transparent;
+            border: none;
+            padding: 0.25rem 0;
+            margin: 0.25rem 0;
+            border-radius: 0;
+            font-size: 0.9rem;
+        }
+        
+        /* Recipe Styles */
+        #recipe-container {
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            width: 100%;
+        }
+        
+        .recipe-box {
+            background: #f8f8f8;
+            border: 1px solid #ddd;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            width: 100%;
+        }
+        
+        .recipe-toggle {
+            background-color: #c8102e;
+            color: #fff;
+            padding: 1rem;
+            width: 100%;
+            text-align: left;
+            border: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .recipe-toggle::after {
+            content: '▼';
+            font-size: 0.8rem;
+            transition: transform 0.3s;
+        }
+        
+        .recipe-toggle.active {
+            background-color: #a00d24;
+        }
+        
+        .recipe-toggle.active::after {
+            transform: rotate(180deg);
+        }
+        
+        .recipe-content {
+            display: none;
+            padding: 1.25rem;
+            background: #fff;
+            word-wrap: break-word;
+            overflow-wrap: break-word;
+        }
+        
+        .recipe-content.open {
+            display: block;
+        }
+        
+        .recipe-content pre {
+            white-space: pre-wrap;
+            word-break: break-word;
+            font-size: 0.9rem;
+            line-height: 1.5;
+            margin: 0;
+            font-family: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', Consolas, 'Courier New', monospace;
+            overflow-x: hidden;
+        }
+        
+        /* Credits */
+        #credits {
+            text-align: center;
+            padding: 2rem 1rem;
+        }
+        
+        #credits a {
+            color: #c8102e;
+            text-decoration: none;
+        }
+        
+        #credits a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Dark Mode */
+        .dark-mode {
+            background: #121212;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode header {
+            background: #1f1f1f;
+            color: #fff;
+        }
+        
+        .dark-mode .nav-tab {
+            color: #ffeb3b;
+        }
+        
+        .dark-mode .nav-tab.active {
+            color: white;
+        }
+        
+        .dark-mode .recipe-box {
+            background: #1e1e1e;
+            border-color: #333;
+        }
+        
+        .dark-mode .recipe-content {
+            background: #1e1e1e;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode #checklist li {
+            background: #1e1e1e;
+            border-color: #c8102e;
+            color: #e0e0e0;
+        }
+        
+        .dark-mode #checklist li:hover {
+            background: #2a2a2a;
+        }
+        
+        .dark-mode #checklist li.completed {
+            background: #1a3d1a;
+            border-left-color: #28a745;
+        }
+        
+        .dark-mode .theme-toggle {
+            background-color: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        
+        .dark-mode #credits a {
+            color: #ffeb3b;
+        }
+        
+        .dark-mode #search {
+            background: #2a2a2a;
+            color: #e0e0e0;
+            border: 1px solid #444;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            body {
+                font-size: 16px;
+                -webkit-text-size-adjust: 100%;
+            }
+            
+            header {
+                padding: 0.75rem;
+            }
+            
+            header h1 {
+                font-size: 1.3rem;
+                margin-right: 3rem;
+            }
+            
+            .hamburger {
+                display: flex;
+                top: 0.75rem;
+                right: 0.75rem;
+            }
+            
+            nav {
+                position: absolute;
+                top: 100%;
+                left: 0;
+                right: 0;
+                background: #c8102e;
+                flex-direction: column;
+                padding: 1rem;
+                margin-top: 0;
+                box-shadow: 0 4px 8px rgba(0,0,0,0.2);
+            }
+            
+            nav.mobile-hidden {
+                display: none;
+            }
+            
+            nav.mobile-visible {
+                display: flex;
+            }
+            
+            .nav-tab {
+                padding: 0.75rem 1rem;
+                text-align: center;
+                border-radius: 8px;
+                margin: 0.25rem 0;
+            }
+            
+            .header-controls {
+                flex-direction: column;
+                gap: 0.75rem;
+                margin-top: 1rem;
+            }
+            
+            #search {
+                width: 100%;
+                max-width: none;
+                font-size: 16px;
+            }
+            
+            main {
+                padding: 0.75rem;
+            }
+            
+            .recipe-toggle {
+                padding: 1rem 0.75rem;
+                font-size: 1rem;
+            }
+            
+            .recipe-content {
+                padding: 1rem 0.75rem;
+            }
+            
+            .recipe-content pre {
+                font-size: 0.85rem;
+            }
+            
+            #checklist li {
+                margin: 0.5rem 0;
+                padding: 0.75rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            header h1 {
+                font-size: 1.2rem;
+            }
+            
+            .recipe-content pre {
+                font-size: 0.8rem;
+                line-height: 1.4;
+            }
+            
+            #checklist li {
+                padding: 0.75rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Prevent horizontal scrolling */
+        html, body {
+            max-width: 100%;
+            overflow-x: hidden;
+        }
+        
+        * {
+            max-width: 100%;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <div class="hamburger" id="hamburger">
+            <span></span>
+            <span></span>
+            <span></span>
+        </div>
+        <h1>Quesada Recipes</h1>
+        <nav id="nav" class="mobile-hidden">
+            <a href="#" class="nav-tab active" data-section="checklist">Checklist</a>
+            <a href="#" class="nav-tab" data-section="recipes">Recipes</a>
+            <a href="#" class="nav-tab" data-section="credits">Credits</a>
+        </nav>
+        <div class="header-controls">
+            <input type="text" id="search" placeholder="Search recipes..." />
+            <button id="theme-toggle" class="theme-toggle">🌙 Dark Mode</button>
+        </div>
+    </header>
+    <main id="content">
+    <section id="checklist" class="section active">
+  <h2>Opening Checklist</h2>
+  <ul>
+    <li><strong>Power On Equipment:</strong> Turn on warmers</li>
+    <li><strong>Power On Equipment:</strong> Turn on ovens and steamers</li>
+
+    <li><strong>Reheat Leftovers:</strong> Place leftover rice in steamer <em>(steam for 50 minutes)</em></li>
+    <li><strong>Reheat Leftovers:</strong> Place leftover Quesada meats in the oven</li>
+
+    <li>
+      <strong>Check Vegetable Prep:</strong> Ensure the following are prepped:
+      <ul>
+        <li>Green pepper</li>
+        <li>Red pepper</li>
+        <li>Red onion</li>
+        <li>White onion</li>
+        <li>Jalapeño</li>
+        <li>Tomato</li>
+      </ul>
+    </li>
+
+    <li><strong>Fresh Prep:</strong> Cook a new batch of rice</li>
+    <li><strong>Fresh Prep:</strong> Prepare fish, vegetables, and queso</li>
+  </ul>
+</section>
+
+        <section id="recipes" class="section">
+            <h2>Recipe List</h2>
+            <div id="recipe-container">
+
+             <div class="recipe-box">
+    <button class="recipe-toggle">Barbacoa</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Pulled Beef: 1.135 kg
+- Chipotle Paste: 1.5 tbls
+- Cumin: 1 tbls
+- Cloves: 1/2 tsp
+- Vinegar: 3 tbls
+- Water: 1/4 cup
+
+Procedure:
+1. Mix chipotle paste, cumin, and cloves.
+2. Add vinegar and water slowly to form marinade.
+3. Shred thawed pulled beef and remove any fat or tendons.
+4. Mix beef with marinade until fully coated.
+5. Store in 1/3 stainless container and label.
+6. Reheat in Rational (500g, 4.5 mins, '1 kg meat' setting) or TurboChef (flatten package, select '2x500g reheat').
+7. Ensure internal temperature reaches 74°C.
+
+Storage: Refrigerator in 1/3 stainless container
+Shelf Life: 3 days
+Yield: Approx. 1200 g
+Last Updated: July 12, 2022</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Ground Beef</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Ground Beef: 2.27 kg
+- Diced Cooking Onions: 2 cups
+- Diced Tomatoes: 2 cups
+- Chipotle Paste: 3 tbls
+- Tomato Paste: 1/4 cup
+- Chili Powder: 1/4 cup
+- Garlic Powder: 1.5 tbls
+- Cumin: 1.5 tbls
+- Smoked Paprika: 2 tsp
+- Salt: 1 tsp
+
+Procedure:
+1. Thaw ground beef 24 hours in advance.
+2. Mix all spices in a 4oz container and shake well.
+3. Crumble beef into bowl with onions, tomatoes, pastes, and spices.
+4. Mix thoroughly and portion into containers.
+5. Heat in Rational (3 mins, '1kg Meat') or TurboChef ('2x500g Reheat').
+6. Ensure internal temp reaches 74°C.
+
+Storage: Covered container in refrigerator
+Shelf Life: 3 days (beef), 14 days (spice mix)
+Yield: Approx. 6 x 500g containers
+Last Updated: December 31, 2021</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Spicy Chipotle Chicken</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Diced Cooking Onions: 2 cups
+- Chicken Broth Concentrate: 1/3 cup
+- Water: 4 cups
+- Black Pepper: 3 tbls
+- Chipotle Paste: 3 cups
+- Canola Oil: 1/2 cup
+- Chicken (80/20 dark): 4.54 kg
+
+Procedure:
+1. Roast onions with canola oil using 'Roast Veggies' oven setting.
+2. Mix broth and water in a large bowl.
+3. Add chipotle paste, pepper, oil.
+4. Add frozen chicken (do not thaw), mix thoroughly.
+5. Portion into pans for Rational or parchment for TurboChef.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: Rational: 7 x 1kg pans, TurboChef: ~13 x 500g packages
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Brown Rice</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Brown Rice: 5 cups
+- Water: 6.5 cups or to line 7
+- Salt: 1 tbls
+- Oregano: 1 tbls
+- Minced Garlic: 1 tbls
+- Canola Oil: 2 tbls
+- Lime Juice: 1/4 cup
+
+Procedure:
+1. Cook rice in rice cooker.
+2. Mix sauce ingredients separately.
+3. Once cooked, rest rice for 5 minutes, then transfer to bowl.
+4. Stir in sauce evenly.
+5. Do not mix sauce directly in rice cooker to avoid damage.
+
+Storage: 4"–1/3 black cambro container
+Shelf Life: 4 hours (rice), 3 days (sauce)
+Yield: 3.5 litres
+Last Updated: August 20th, 2020</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Roasted Tomato</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Tomatoes: As needed
+
+Procedure:
+1. Preheat oven to 450°F.
+2. Remove stems and place tomatoes stem-side down on parchment-lined tray.
+3. Roast 25–45 minutes until blistered.
+4. Blend in a 6 QT container until smooth.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 4 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Salsa Verde</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Tomatillo Sauce: 4 litres
+- Diced Jalapeños: 2 cups
+- Diced Cooking Onions: 2 cups
+- Chopped Cilantro: 2 cups
+- Salt: 2 tbls
+
+Procedure:
+1. Ensure tomatillo sauce is cold.
+2. Blend all ingredients until broken down (do not overblend).
+3. Cilantro should still be visible.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 4 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Salsa Roja</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Roasted Tomatoes: 4 litres
+- Roasted & Blended De Arbol: 2 cups (~120g)
+- Minced Garlic: 1/4 cup
+- Oregano: 1/3 cup
+- Salt: 3 tbls
+- Diced Cooking Onions: 2 cups
+
+Procedure:
+1. Blend all ingredients to a thick but pourable texture.
+2. Simmer on low (1000W) for 15 minutes.
+3. Avoid high heat—it may spoil flavour.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 4.3 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Chipotle Tomato Salsa</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Roasted Tomato: 4 litres
+- Chipotle Paste: 2.5 tbls
+- Diced Cooking Onions: 1 cup
+- Salt: 2 tbls
+
+Procedure:
+1. Blend all ingredients in a 6 QT container using immersion blender.
+2. Stop when thick but pourable.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 4 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Cilantro-Lime Cream</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Sour Cream: 8 cups
+- Chopped Cilantro: 8 cups
+- Lime Juice: 3/4 cup
+
+Procedure:
+1. Blend 2 cups sour cream with all cilantro and lime juice until smooth.
+2. Stir in remaining sour cream by hand.
+3. Ensure even consistency for squeeze bottle use.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 3 litres
+Last Updated: August 4th, 2020</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Guacamole</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Avocado: 1 box (14–16 count)
+- Diced Cooking Onions: 1/3 cup
+- Chopped Cilantro: 1/3 cup
+- Black Pepper: 1 tbls
+- White Pepper: 2 tbls
+- Salt: 1 tbls
+- Minced Garlic: 1 tbls
+- Lime Juice: 3 tbls
+
+Procedure:
+1. Scoop ripe avocados, discard skins and pits.
+2. Combine with other ingredients and mash until smooth.
+3. Scrape off oxidized layer before serving.
+4. Wrap tightly with plastic and foil.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 2.5 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Pickled Onions</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- White Vinegar: 1 litre (4 cups)
+- Salt: 3 tbls
+- White Sugar: 1/2 cup
+- Red Onions: 4 large
+
+Procedure:
+1. In a 4 QT container, combine vinegar, sugar, and salt. Stir until dissolved.
+2. Cut ends off onions, peel, and slice into 3/16" pieces using slicer.
+3. Separate slices and add to vinegar mix. Mix well.
+4. Ensure onions are fully submerged, cover, and refrigerate.
+5. Marinate for 24 hours before serving.
+
+Storage: Covered container in refrigerator
+Shelf Life: 6 days
+Yield: 2.5 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Adobo Paste</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Dried Ancho Peppers: 1.25 kg
+- Dried Pasilla Peppers: 0.2 kg
+- Water: As needed
+- Adobo Spice Pack: 1 bag (1 lb)
+- Minced Garlic: 1 cup
+- White Vinegar: 4 cups
+
+Procedure:
+1. Rinse and boil peppers for 45 minutes (1800W).
+2. Soften further if needed (15 mins at 1200W).
+3. Reserve 6 cups cooking liquid.
+4. Blend peppers, spice pack, garlic, and vinegar.
+5. Add reserved water to adjust consistency.
+
+Storage: Refrigerator in covered container
+Shelf Life: 21 days
+Yield: 6.5 litres
+Last Updated: August 25, 2020</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Chipotle Paste</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Dried Morita Peppers: 3 lbs
+- Water: 25 cups
+
+Procedure:
+1. Remove stems, rinse peppers.
+2. Simmer for 45 minutes (1800W), stir occasionally.
+3. Blend with remaining water until smooth and thick.
+4. Do not drain the liquid.
+
+Storage: Refrigerator in covered container
+Shelf Life: 21 days
+Yield: 6 litres
+Last Updated: August 25, 2020</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Black Beans</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Dry Black Beans: 16 cups
+- Minced Garlic: 1/3 cup
+- Oregano: 1 cup
+- Water: 40 cups
+- Salt (stage 3): 1/4 cup
+
+Procedure:
+1. Rinse beans. Add garlic, oregano, and water to pot.
+2. Stage 1: Boil on high (1800W) for 45 mins.
+3. Stage 2: Simmer at 1200W for 15 mins.
+4. Stage 3: Add salt, cook for another 20 mins.
+5. Check texture: cooked but slightly al dente.
+6. Let cool and store.
+
+Storage: Refrigerator in covered container
+Shelf Life: 3 days
+Yield: 10 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Queso</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Queso: 1 can (3 kg)
+- Water: 2 cups
+- Chipotle Tomato Salsa: 1/4 to 1/2 cup
+
+Procedure:
+1. Mix queso and water in 6QT cambro and refrigerate.
+2. To serve, mix queso/water with salsa in pot.
+3. Heat in stages (small batch: 4+3 mins; large batch: 4+4+5 mins).
+4. Stir and scrape pot bottom after each stage.
+5. Ensure internal temp reaches 74°C.
+
+Storage: 6QT cambro in refrigerator
+Shelf Life: 6 days
+Yield: 3–6.25 cups
+Last Updated: February 2, 2022</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Refried Beans</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Pinto Beans: 1–2 litres
+- Reserved Cooking Liquid: 1.5–2.5 cups
+- Chipotle Paste: 1–2 tbls
+- Chili Powder: 1–2 tsp
+- Ground Cumin: 1–2 tsp
+- Garlic Powder: 0.5–1 tsp
+
+Procedure:
+1. Cook and drain pinto beans, reserve liquid.
+2. Combine beans and liquid in pan.
+3. Heat covered on burner to 74°C (8–12 mins depending on batch).
+4. Stir in chipotle and spices.
+5. Blend with immersion blender until smooth.
+
+Storage: 2" or 4" 1/3 black cambro container
+Shelf Life: 6 hours
+Yield: 1–2 litres
+Last Updated: August 31, 2020</pre>
+    </div>
+</div>
+
+<div class="recipe-box">
+    <button class="recipe-toggle">Pinto Beans</button>
+    <div class="recipe-content">
+        <pre>Ingredients:
+- Dry Pinto Beans: 16 cups
+- Minced Garlic: 1/3 cup
+- Oregano: 1 cup
+- Water: 40 cups
+- Salt (stage 3): 1/4 cup
+
+Procedure:
+1. Sift and wash beans twice.
+2. Add garlic, oregano, water. Cook in 3 stages:
+3. Stage 1: Boil (1800W) 45 mins
+4. Stage 2: Simmer (1200W) 35 mins
+5. Stage 3: Add salt, cook 30 mins
+6. Check beans (slightly al dente). Cool and transfer.
+
+Storage: Covered container in refrigerator
+Shelf Life: 3 days
+Yield: 10 litres
+Last Updated: September 3rd, 2019</pre>
+    </div>
+</div>
+
+ <div class="recipe-box">
+                    <button class="recipe-toggle">Pulled Pork Carnitas</button>
+                    <div class="recipe-content">
+                        <pre>Single Package:
+- Smoked Pork: 1.2 kg
+- Adobo Paste: 1/3 cup
+- Chipotle Paste: 1/4 cup
+- Garlic: 1/4 cup
+- Oregano: 2 tbsp
+- Orange Juice: 1 bottle (473 ml)
+- Water: 2 cups
+
+Procedure:
+1. Thaw pork, break apart, mix all ingredients.
+2. Boil covered, simmer for 5 mins.
+
+Yield: 1.5 kg
+Shelf Life: 3 days</pre>
+                    </div>
+                </div>
+
+ <div class="recipe-box">
+                    <button class="recipe-toggle">Roasted & Blended De Arbol</button>
+                    <div class="recipe-content">
+                        <pre>Ingredients:
+- Dried De Arbol: 60g
+
+Procedure:
+1. Roast in Turbochef or convection oven for 60 secs at 450°F.
+2. Blend or flake.
+
+Storage: Room temp
+Shelf Life: 4 weeks</pre>
+                    </div>
+                </div>
+
+                <div class="recipe-box">
+                    <button class="recipe-toggle">Roasted Tomato</button>
+                    <div class="recipe-content">
+                        <pre>Ingredients:
+- Tomatoes: As needed
+
+Procedure:
+1. Preheat oven to 450°F.
+2. Remove stems and place tomatoes stem-side down on parchment-lined tray.
+3. Roast 25–45 minutes until blistered.
+4. Blend in a 6 QT container until smooth.
+
+Storage: Refrigerator in covered container
+Yield: 4 litres
+Shelf Life: 3 days</pre>
+                    </div>
+                </div>
+
+
+                </div>
+            </div>
+        </section>
+        <section id="credits" class="section">
+            <h2>Credits</h2>
+            <p>Made by Liam Bendix, 2025</p>
+            <p>Contact: <a href="mailto:liam@liambendix.com">liam@liambendix.com</a></p>
+        </section>
+    </main>
+    
+    <script>
+        // Navigation functionality
+        const navTabs = document.querySelectorAll('.nav-tab');
+        const sections = document.querySelectorAll('.section');
+        const hamburger = document.getElementById('hamburger');
+        const nav = document.getElementById('nav');
+        
+        // Tab switching
+        navTabs.forEach(tab => {
+            tab.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetSection = e.target.dataset.section;
+                
+                // Remove active class from all tabs and sections
+                navTabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                
+                // Add active class to clicked tab and corresponding section
+                e.target.classList.add('active');
+                document.getElementById(targetSection).classList.add('active');
+                
+                // Hide mobile menu after selection
+                nav.classList.remove('mobile-visible');
+                nav.classList.add('mobile-hidden');
+                hamburger.classList.remove('active');
+            });
+        });
+        
+        // Hamburger menu toggle
+        hamburger.addEventListener('click', () => {
+            hamburger.classList.toggle('active');
+            if (nav.classList.contains('mobile-visible')) {
+                nav.classList.remove('mobile-visible');
+                nav.classList.add('mobile-hidden');
+            } else {
+                nav.classList.remove('mobile-hidden');
+                nav.classList.add('mobile-visible');
+            }
+        });
+        
+        // Recipe toggle functionality
+        document.addEventListener('click', (e) => {
+            if (e.target.classList.contains('recipe-toggle')) {
+                const content = e.target.nextElementSibling;
+                const isOpen = content.classList.contains('open');
+                
+                // Close all recipe contents
+                document.querySelectorAll('.recipe-content').forEach(rc => {
+                    rc.classList.remove('open');
+                });
+                document.querySelectorAll('.recipe-toggle').forEach(rt => {
+                    rt.classList.remove('active');
+                });
+                
+                // Toggle the clicked recipe
+                if (!isOpen) {
+                    content.classList.add('open');
+                    e.target.classList.add('active');
+                }
+            }
+        });
+        
+        // Checklist functionality
+        document.addEventListener('click', (e) => {
+            if (e.target.tagName === 'LI' && e.target.closest('#checklist')) {
+                e.target.classList.toggle('completed');
+            }
+        });
+        
+        // Search functionality
+        const searchInput = document.getElementById('search');
+        searchInput.addEventListener('input', (e) => {
+            const searchTerm = e.target.value.toLowerCase();
+            const recipeBoxes = document.querySelectorAll('.recipe-box');
+            
+            recipeBoxes.forEach(box => {
+                const recipeName = box.querySelector('.recipe-toggle').textContent.toLowerCase();
+                const recipeContent = box.querySelector('.recipe-content').textContent.toLowerCase();
+                
+                if (recipeName.includes(searchTerm) || recipeContent.includes(searchTerm)) {
+                    box.style.display = 'block';
+                } else {
+                    box.style.display = searchTerm === '' ? 'block' : 'none';
+                }
+            });
+            
+            // Auto-switch to recipes section when searching
+            if (searchTerm && !document.getElementById('recipes').classList.contains('active')) {
+                navTabs.forEach(t => t.classList.remove('active'));
+                sections.forEach(s => s.classList.remove('active'));
+                document.querySelector('[data-section="recipes"]').classList.add('active');
+                document.getElementById('recipes').classList.add('active');
+            }
+        });
+        
+        // Theme toggle functionality
+        const themeToggle = document.getElementById('theme-toggle');
+        themeToggle.addEventListener('click', () => {
+            document.body.classList.toggle('dark-mode');
+            themeToggle.textContent = document.body.classList.contains('dark-mode') 
+                ? '☀️ Light Mode' 
+                : '🌙 Dark Mode';
+        });
+        
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', (e) => {
+            if (!nav.contains(e.target) && !hamburger.contains(e.target)) {
+                nav.classList.remove('mobile-visible');
+                nav.classList.add('mobile-hidden');
+                hamburger.classList.remove('active');
+            }
+        });
+    </script>
+</body>
+</html>
