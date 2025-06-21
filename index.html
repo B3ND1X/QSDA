@@ -1,14 +1,32 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <meta name="apple-mobile-web-app-capable" content="yes">
-    <meta name="mobile-web-app-capable" content="yes">
-    <link rel="icon" sizes="192x192" href="assets/icon.png">
-    <link rel="apple-touch-icon" href="assets/icon.png">
-    <link rel="apple-touch-startup-image" href="assets/splash.png">
-    <title>Quesada Recipes</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  
+  <!-- Android and PWA -->
+  <meta name="theme-color" content="#c8102e">
+  <meta name="mobile-web-app-capable" content="yes">
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="assets/icon.png">
+  <link rel="icon" type="image/png" sizes="512x512" href="assets/icon.png">
+
+  <!-- iOS Support -->
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="default">
+  <meta name="apple-mobile-web-app-title" content="Quesada Recipes">
+  <link rel="apple-touch-icon" href="assets/icon.png">
+
+  <!-- Basic splash screen for iOS (optional: add device-specific media queries for full support) -->
+  <link rel="apple-touch-startup-image" href="assets/splash.png">
+
+  <!-- Optional: add device-specific splash screens -->
+  <!--
+  <link rel="apple-touch-startup-image" href="assets/splash-750x1334.png" media="(device-width: 375px) and (device-height: 667px)">
+  <link rel="apple-touch-startup-image" href="assets/splash-1125x2436.png" media="(device-width: 375px) and (device-height: 812px)">
+  -->
+
+  <title>Quesada Recipes</title>
     <style>
         :root {
             color-scheme: light dark;
